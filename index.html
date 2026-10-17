@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2a0a12">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Adisyon">
+<title>Adisyon</title>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500;6..96,700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--wine:#2a0a12;--wine2:#3d1220;--paper:#f4ecdc;--paper2:#e9dfca;--ink:#2b1d1a;--mut:#7d6b5d;--brass:#c79a4b;--green:#2f6b4a;--red:#a3362f;
+ --disp:'Bodoni Moda',Georgia,serif;--mono:'Courier Prime','Courier New',monospace}
+*{box-sizing:border-box;margin:0}
+html{background:var(--wine)}
+body{font-family:var(--mono);color:var(--paper);background:radial-gradient(120% 60% at 50% 0,var(--wine2),var(--wine) 70%);min-height:100vh;
+ padding:env(safe-area-inset-top) 0 0}
+.wrap{max-width:520px;margin:0 auto;padding:18px 16px calc(140px + env(safe-area-inset-bottom))}
+.head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:14px}
+.dateBtn{background:none;border:0;color:var(--paper);text-align:left;font:inherit;padding:0}
+.dateBtn big{display:block;font-family:var(--disp);font-size:38px;font-weight:700;line-height:1}
+.dateBtn span{font-size:14px;color:var(--brass)}
+#date{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px}
+.sync{font-size:11px;color:#c9b9a8;display:flex;align-items:center;gap:6px;padding-bottom:6px}
+.sync b{width:8px;height:8px;border-radius:50%;background:var(--red)}
+.sync.on b{background:#6fcf97}
+.strip{display:flex;gap:6px;margin-bottom:20px}
+.strip button{flex:1;border:1px solid #5a2535;background:transparent;color:#d8c9b8;border-radius:10px;padding:8px 0;font:inherit;line-height:1.25}
+.strip button small{display:block;font-size:10px;color:#a8917f}
+.strip button strong{font-size:17px}
+.strip button.on{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+.strip button.on small{color:var(--mut)}
+.strip button.today:not(.on){border-color:var(--brass)}
+.banner{background:var(--brass);color:#1d1306;border-radius:10px;padding:12px;margin-bottom:12px;font-size:14px;font-weight:700}
+.slip{position:relative;background:var(--paper);color:var(--ink);margin-bottom:14px;padding:14px 16px 16px;
+ --t:radial-gradient(circle 6px at 50% 0,#0000 98%,#000) top/14px 51% repeat-x;
+ -webkit-mask:radial-gradient(circle 6px at 7px 100%,#0000 98%,#000) bottom/14px 51% repeat-x,linear-gradient(#000 0 0) top/100% 51% no-repeat;
+ mask:radial-gradient(circle 6px at 7px 100%,#0000 98%,#000) bottom/14px 51% repeat-x,linear-gradient(#000 0 0) top/100% 51% no-repeat;
+ border-radius:4px 4px 0 0}
+.slip .r1{display:flex;justify-content:space-between;align-items:baseline}
+.slip .t{font-family:var(--disp);font-size:30px;font-weight:700}
+.slip .p{font-weight:700;font-size:18px}
+.slip .n{font-weight:700;font-size:17px;margin-top:2px}
+.slip .m{font-size:13px;color:var(--mut);margin-top:2px;border-bottom:1px dashed #b9a98f;padding-bottom:10px}
+.slip .a{display:flex;gap:6px;margin-top:10px}
+.slip .a button{flex:1;height:38px;border:1px solid var(--ink);background:transparent;color:var(--ink);font:700 13px var(--mono);border-radius:6px}
+.slip .a .pay{background:var(--ink);color:var(--paper)}
+.slip .a .del{border-color:var(--red);color:var(--red);flex:.6}
+.stamp{position:absolute;right:46px;top:46px;border:3px solid var(--green);color:var(--green);font:700 22px var(--disp);padding:2px 10px;border-radius:4px;
+ transform:rotate(-12deg);letter-spacing:2px;opacity:.85;pointer-events:none}
+.slip.paid .t,.slip.paid .n{opacity:.55}
+.empty{text-align:center;color:#c9b9a8;padding:40px 12px;font-size:14px;line-height:1.6}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--paper);color:var(--ink);padding:12px 16px calc(12px + env(safe-area-inset-bottom));border-top:3px double var(--ink)}
+.bar .in{max-width:520px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.bar .k{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:2px 12px;font-size:12px;color:var(--mut)}
+.bar .k b{display:block;font:700 20px var(--disp);color:var(--ink)}
+.bar .k div:last-child b{color:var(--green)}
+.add{width:60px;height:60px;border-radius:50%;border:0;background:var(--wine);color:var(--paper);font-size:32px;line-height:1;box-shadow:0 0 0 3px var(--paper),0 0 0 5px var(--brass)}
+.note{font-size:11px;color:#a8917f;text-align:center;margin-top:6px;line-height:1.5}
+.note button{background:none;border:0;color:var(--brass);font:inherit;text-decoration:underline;padding:0}
+.sheet{position:fixed;inset:0;background:var(--paper);color:var(--ink);display:none;overflow:auto;z-index:5;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.sheet.open{display:block}
+.form{max-width:520px;margin:0 auto;padding:20px 18px 30px}
+.form h2{font-family:var(--disp);font-size:34px;border-bottom:3px double var(--ink);padding-bottom:8px;margin-bottom:6px}
+label{display:block;font-size:12px;color:var(--mut);margin:14px 0 2px}
+input{width:100%;height:44px;border:0;border-bottom:1.5px solid var(--ink);background:transparent;color:var(--ink);font:700 17px var(--mono);padding:0 2px;border-radius:0}
+input:focus{outline:0;border-bottom-color:var(--red);background:var(--paper2)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.btns{display:grid;grid-template-columns:1fr 2fr;gap:10px;margin-top:26px}
+.btns button{height:50px;border-radius:6px;font:700 16px var(--mono);border:1.5px solid var(--ink);background:transparent;color:var(--ink)}
+.btns .save{background:var(--wine);border-color:var(--wine);color:var(--paper)}
+.lock{position:fixed;inset:0;z-index:20;background:radial-gradient(120% 60% at 50% 0,var(--wine2),var(--wine) 70%);display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+.lock.on{display:flex}
+.lock h2{font-family:var(--disp);font-size:40px;margin-bottom:6px}
+.lock p{font-size:13px;color:#c9b9a8;margin-bottom:22px}
+.dots{display:flex;gap:14px;margin-bottom:26px}
+.dots i{width:16px;height:16px;border-radius:50%;border:2px solid var(--brass)}
+.dots i.f{background:var(--brass)}
+.pad{display:grid;grid-template-columns:repeat(3,76px);gap:14px}
+.pad button{height:76px;border-radius:50%;border:1px solid #5a2535;background:transparent;color:var(--paper);font:700 26px var(--disp)}
+.pad button:active{background:var(--paper);color:var(--ink)}
+.pad .sp{visibility:hidden}
+.lock.bad .dots{animation:sh .3s}
+@keyframes sh{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+@media(prefers-reduced-motion:no-preference){.stamp{animation:st .25s ease-out}@keyframes st{from{transform:rotate(-12deg) scale(1.8);opacity:0}}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <button class="dateBtn" id="dateBtn"><big id="dBig"></big><span id="dSub"></span></button>
+    <div class="sync" id="sync"><b></b><span>Bu cihaz</span></div>
+  </div>
+  <input type="date" id="date" aria-label="Tarih seç">
+  <div class="strip" id="strip"></div>
+  <div id="banners"></div>
+  <div id="list"></div>
+  <p class="note"><button id="notifBtn">Hatırlatma bildirimlerini aç</button> · <button id="lockBtn">Kilitle</button><br>Randevudan 3 saat önce, uygulama açıkken uyarır.</p>
+</div>
+
+<div class="lock on" id="lock">
+  <h2>Adisyon</h2><p>Şifreyi gir</p>
+  <div class="dots" id="dots"><i></i><i></i><i></i><i></i></div>
+  <div class="pad" id="pad">
+    <button>1</button><button>2</button><button>3</button>
+    <button>4</button><button>5</button><button>6</button>
+    <button>7</button><button>8</button><button>9</button>
+    <button class="sp"></button><button>0</button><button data-b="1" aria-label="Sil">⌫</button>
+  </div>
+</div>
+
+<div class="bar"><div class="in">
+  <div class="k">
+    <div>Gün toplamı<b id="sTotal">0 ₺</b></div>
+    <div>Tahsil edilen<b id="sPaid">0 ₺</b></div>
+    <div style="grid-column:1/3"><span id="sCount">0 müşteri</span></div>
+  </div>
+  <button class="add" id="add" aria-label="Yeni kayıt">+</button>
+</div></div>
+
+<div class="sheet" id="sheet"><div class="form">
+  <h2 id="fTitle">Yeni adisyon</h2>
+  <div class="two">
+    <div><label for="fAd">Ad</label><input id="fAd" autocomplete="off"></div>
+    <div><label for="fSoyad">Soyad</label><input id="fSoyad" autocomplete="off"></div>
+  </div>
+  <div class="two">
+    <div><label for="fTarih">Tarih</label><input type="date" id="fTarih"></div>
+    <div><label for="fSaat">Saat</label><input type="time" id="fSaat"></div>
+  </div>
+  <label for="fHizmet">Verilen hizmet</label><input id="fHizmet" autocomplete="off">
+  <label for="fUcret">Ücret (₺)</label><input id="fUcret" type="number" inputmode="decimal" min="0">
+  <label for="fIsyeri">İşyerinin adı</label><input id="fIsyeri" autocomplete="off">
+  <label for="fKonum">Konum</label><input id="fKonum" autocomplete="off">
+  <div class="btns"><button id="cancel">Vazgeç</button><button class="save" id="save">Kaydet</button></div>
+</div></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+// ====== FIREBASE AYARI: Firebase konsolundaki web uygulaması ayarlarını buraya yapıştır ======
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyChN8_R4w9YXUUQ0Saa86DtDSaeEjEomYA",
+  authDomain: "admin2-5e33a.firebaseapp.com",
+  projectId: "admin2-5e33a",
+  storageBucket: "admin2-5e33a.firebasestorage.app",
+  messagingSenderId: "470670197194",
+  appId: "1:470670197194:web:18d9f1f243498ceea80f33"
+};
+// ============================================================================================
+
+const $ = id => document.getElementById(id);
+const COL = 'adisyon';
+const fmt = n => (Number(n)||0).toLocaleString('tr-TR') + ' ₺';
+const iso = d => { const z = new Date(d.getTime() - d.getTimezoneOffset()*60000); return z.toISOString().slice(0,10); };
+const GUN = ['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'];
+const GUNUZUN = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+const AY = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+
+let db = null, unsub = null, records = [], editId = null;
+if (FIREBASE_CONFIG.projectId && window.firebase) {
+  try {
+    firebase.initializeApp(FIREBASE_CONFIG);
+    db = firebase.firestore();
+    db.enablePersistence({synchronizeTabs:true}).catch(()=>{});
+  } catch(e) { console.error(e); db = null; }
+}
+const localGet = () => { try { return JSON.parse(localStorage.getItem('adisyon_local')||'[]'); } catch(e){ return []; } };
+const localSet = a => { try { localStorage.setItem('adisyon_local', JSON.stringify(a)); } catch(e){} };
+function setSync(on){ $('sync').className = 'sync' + (on?' on':''); $('sync').lastElementChild.textContent = on ? 'Senkron açık' : 'Bu cihaz'; }
+const esc = s => String(s??'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function drawHead(){
+  const d = new Date($('date').value+'T12:00');
+  $('dBig').textContent = d.getDate() + ' ' + AY[d.getMonth()];
+  $('dSub').textContent = GUNUZUN[d.getDay()] + ' · ' + d.getFullYear();
+  const todayIso = iso(new Date());
+  let h = '';
+  for (let i=-3;i<=3;i++){
+    const x = new Date(d); x.setDate(x.getDate()+i); const s = iso(x);
+    h += `<button data-d="${s}" class="${i===0?'on':''} ${s===todayIso?'today':''}"><small>${GUN[x.getDay()]}</small><strong>${x.getDate()}</strong></button>`;
+  }
+  $('strip').innerHTML = h;
+}
+function subscribe(){
+  const tarih = $('date').value; drawHead();
+  if (unsub) { unsub(); unsub = null; }
+  if (db) {
+    unsub = db.collection(COL).where('tarih','==',tarih).onSnapshot(snap => {
+      records = snap.docs.map(d => ({id:d.id, ...d.data()})); setSync(true); render();
+    }, err => { console.error(err); setSync(false); });
+  } else { records = localGet().filter(r => r.tarih === tarih); setSync(false); render(); }
+}
+function render(){
+  const list = records.slice().sort((a,b) => (a.saat||'').localeCompare(b.saat||''));
+  $('sCount').textContent = list.length + ' müşteri';
+  $('sTotal').textContent = fmt(list.reduce((s,r)=>s+(+r.ucret||0),0));
+  $('sPaid').textContent = fmt(list.filter(r=>r.odendi).reduce((s,r)=>s+(+r.ucret||0),0));
+  if (!list.length) { $('list').innerHTML = '<div class="empty">Bu gün için adisyon yok.<br>Sağ alttaki + ile ilk müşteriyi ekle.</div>'; return; }
+  $('list').innerHTML = list.map(r => `
+    <div class="slip ${r.odendi?'paid':''}" data-id="${r.id}">
+      <div class="r1"><span class="t">${esc(r.saat||'--:--')}</span><span class="p">${fmt(r.ucret)}</span></div>
+      <div class="n">${esc(r.ad)} ${esc(r.soyad)}</div>
+      <div class="m">${esc(r.hizmet||'Hizmet girilmedi')}${r.isyeri?'<br>'+esc(r.isyeri):''}${r.konum?' — '+esc(r.konum):''}</div>
+      ${r.odendi?'<div class="stamp">ÖDENDİ</div>':''}
+      <div class="a">
+        <button class="pay" data-a="pay">${r.odendi?'Geri al':'Ödeme al'}</button>
+        <button data-a="edit">Düzenle</button>
+        <button class="del" data-a="del">Sil</button>
+      </div>
+    </div>`).join('');
+}
+async function saveRecord(data, id){
+  if (db) { if (id) await db.collection(COL).doc(id).set(data,{merge:true}); else await db.collection(COL).add({...data, olusturma:Date.now()}); }
+  else { let all = localGet(); if (id) all = all.map(r=>r.id===id?{...r,...data}:r); else all.push({...data,id:'l'+Date.now()}); localSet(all); subscribe(); }
+}
+async function removeRecord(id){
+  if (db) await db.collection(COL).doc(id).delete();
+  else { localSet(localGet().filter(r=>r.id!==id)); subscribe(); }
+}
+function openForm(r){
+  editId = r ? r.id : null;
+  $('fTitle').textContent = r ? 'Adisyonu düzenle' : 'Yeni adisyon';
+  $('fAd').value = r?.ad||''; $('fSoyad').value = r?.soyad||'';
+  $('fTarih').value = r?.tarih || $('date').value; $('fSaat').value = r?.saat||'';
+  $('fHizmet').value = r?.hizmet||''; $('fUcret').value = r?.ucret ?? '';
+  $('fIsyeri').value = r ? (r.isyeri||'') : (localStorage.getItem('adisyon_isyeri')||'');
+  $('fKonum').value = r ? (r.konum||'') : (localStorage.getItem('adisyon_konum')||'');
+  $('sheet').classList.add('open'); setTimeout(()=>$('fAd').focus(),50);
+}
+const closeForm = () => $('sheet').classList.remove('open');
+$('add').onclick = () => openForm();
+$('cancel').onclick = closeForm;
+$('save').onclick = async () => {
+  const ad = $('fAd').value.trim(); if (!ad) { $('fAd').focus(); return; }
+  const data = { ad, soyad:$('fSoyad').value.trim(), tarih:$('fTarih').value||$('date').value, saat:$('fSaat').value,
+    hizmet:$('fHizmet').value.trim(), ucret:parseFloat($('fUcret').value)||0, isyeri:$('fIsyeri').value.trim(), konum:$('fKonum').value.trim() };
+  if (!editId) data.odendi = false;
+  localStorage.setItem('adisyon_isyeri', data.isyeri); localStorage.setItem('adisyon_konum', data.konum);
+  try { await saveRecord(data, editId); } catch(e){ alert('Kaydedilemedi: '+e.message); return; }
+  closeForm();
+  if (data.tarih !== $('date').value) { $('date').value = data.tarih; subscribe(); }
+};
+$('list').onclick = async e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const id = b.closest('.slip').dataset.id, r = records.find(x=>x.id===id); if (!r) return;
+  if (b.dataset.a==='pay') await saveRecord({odendi:!r.odendi}, id);
+  if (b.dataset.a==='edit') openForm(r);
+  if (b.dataset.a==='del' && confirm(`${r.ad} ${r.soyad} adisyonu silinsin mi?`)) await removeRecord(id);
+};
+$('strip').onclick = e => { const b = e.target.closest('button'); if (b){ $('date').value = b.dataset.d; subscribe(); } };
+$('dateBtn').onclick = () => { try { $('date').showPicker(); } catch(e){ $('date').click(); } };
+$('date').onchange = subscribe;
+$('date').value = iso(new Date());
+
+// 3 saat önce hatırlatma
+const notified = new Set(JSON.parse(localStorage.getItem('adisyon_notified')||'[]'));
+$('notifBtn').onclick = async () => {
+  if (!('Notification' in window)) { alert('Bu tarayıcı bildirimi desteklemiyor.'); return; }
+  const p = await Notification.requestPermission();
+  $('notifBtn').textContent = p==='granted' ? 'Bildirimler açık' : 'Bildirim izni verilmedi';
+};
+function checkReminders(){
+  const today = iso(new Date());
+  const run = list => list.forEach(r => {
+    if (r.tarih!==today || !r.saat || r.odendi || notified.has(r.id)) return;
+    const left = new Date(r.tarih+'T'+r.saat) - Date.now();
+    if (left > 0 && left <= 3*3600*1000) {
+      notified.add(r.id); localStorage.setItem('adisyon_notified', JSON.stringify([...notified]));
+      const msg = `Saat ${r.saat} — ${r.ad} ${r.soyad}${r.hizmet?' ('+r.hizmet+')':''}`;
+      const div = document.createElement('div'); div.className='banner'; div.textContent='Randevuya 3 saat kaldı: '+msg; $('banners').appendChild(div);
+      if ('Notification' in window && Notification.permission==='granted') new Notification('Randevu hatırlatma',{body:msg});
+      if (navigator.vibrate) navigator.vibrate(200);
+    }
+  });
+  if (db) db.collection(COL).where('tarih','==',today).get().then(s=>run(s.docs.map(d=>({id:d.id,...d.data()})))).catch(()=>{});
+  else run(localGet());
+}
+setInterval(checkReminders, 30000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) checkReminders(); });
+// Şifre kilidi (şifrenin kendisi dosyada yazmaz, sadece özeti tutulur)
+const PIN_HASH = 'de135f1335faf4aa9be21e873280f3ed6b5b710279e866993a2fee755c9f5f78';
+let pin = '', started = false;
+async function sha(s){
+  if (!(window.crypto && crypto.subtle)) throw new Error('nosubtle');
+  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+function paintDots(){ [...$('dots').children].forEach((d,i)=>d.className = i<pin.length?'f':''); }
+function unlock(){
+  $('lock').classList.remove('on');
+  if (!started) { started = true; subscribe(); checkReminders(); }
+}
+async function tryPin(){
+  let h; try { h = await sha('adisyon:'+pin); } catch(e){ alert('Şifre için sayfa https adresinden açılmalı.'); pin=''; paintDots(); return; }
+  if (h === PIN_HASH) { pin=''; paintDots(); unlock(); }
+  else { $('lock').classList.add('bad'); if (navigator.vibrate) navigator.vibrate(120);
+    setTimeout(()=>{ $('lock').classList.remove('bad'); pin=''; paintDots(); }, 350); }
+}
+$('pad').onclick = e => {
+  const b = e.target.closest('button'); if (!b || b.classList.contains('sp') || pin.length>=4 && !b.dataset.b) return;
+  if (b.dataset.b) pin = pin.slice(0,-1); else pin += b.textContent;
+  paintDots(); if (pin.length===4) tryPin();
+};
+$('lockBtn').onclick = () => location.reload();
+try{ localStorage.removeItem('adisyon_ok'); }catch(e){}
+</script>
+</body>
+</html>
